@@ -6,7 +6,7 @@ int inputPin1 = A2;
 int inputPin2 = A3;
 
 Encoder motor(inputPin1, inputPin2);
-
+//test
 int dirFlag = 0;
 void setup() {
   pinMode(pwmPin1, OUTPUT);
