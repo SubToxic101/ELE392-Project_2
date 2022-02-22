@@ -4,15 +4,15 @@ int pwmPin2 = A5;
 int dirPin = A4;
 int inputPin1 = A2;
 int inputPin2 = A3;
+float pos = 0.0;
 
-Encoder motor(inputPin1, inputPin2);
-//test
-int dirFlag = 0;
+Encoder myEnc(inputPin1, inputPin2);
+
+int dirFlag = 1;
 void setup() {
   pinMode(pwmPin1, OUTPUT);
   pinMode(pwmPin2, OUTPUT);
-  pinMode(inputPin1, INPUT); 
-  pinMode(inputPin2, INPUT);  
+  delay(3000);
 }
 
 void loop() {
@@ -25,11 +25,20 @@ void loop() {
     dirPin = A4;
   }
 
-  analogWrite(dirPin, 128);
+  
 
-  int pos = motor.Read();
-  Serial.print(pos);
-  //delay(2000);
+  pos = myEnc.read() * (360)/(4.4*48);
+  Serial.print("degrees: ");
+  Serial.println(pos);
+
+  
+  if (pos < 720) {
+    analogWrite(dirPin, 50);
+  }
+  else {
+    analogWrite(dirPin, 0);
+  }
+  
 
   /*
   if (dirFlag == 0) {
