@@ -5,10 +5,12 @@ int dirPin = A4;
 int inputPin1 = A2;
 int inputPin2 = A3;
 float pos = 0.0;
+float rpm = 0.0;
+int ms = 0;
 
 Encoder myEnc(inputPin1, inputPin2);
 
-int dirFlag = 1;
+int dirFlag = 0;
 void setup() {
   pinMode(pwmPin1, OUTPUT);
   pinMode(pwmPin2, OUTPUT);
@@ -31,6 +33,18 @@ void loop() {
   Serial.print("degrees: ");
   Serial.println(pos);
 
+  ms = millis();
+  while(ms<(ms+50)) {
+//    ms = millis();
+    Serial.println(ms);
+    rpm = myEnc.read();
+  }
+  rpm = myEnc.read() * (360*1000*60)/(4.4*48*50);
+  Serial.print("rpm: ");
+  Serial.println(rpm);
+
+  rpm = 0;
+  ms = 0;
   
   if (pos < 720) {
     analogWrite(dirPin, 50);
