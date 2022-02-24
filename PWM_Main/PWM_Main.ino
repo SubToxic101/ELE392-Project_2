@@ -6,7 +6,10 @@ int inputPin1 = A2;
 int inputPin2 = A3;
 float pos = 0.0;
 float rpm = 0.0;
+float rpm_counter = 0.0;
+float rpm_start = 0.0;
 int ms = 0;
+int ms_end = 0;
 
 Encoder myEnc(inputPin1, inputPin2);
 
@@ -33,13 +36,21 @@ void loop() {
   Serial.print("degrees: ");
   Serial.println(pos);
 
+  rpm = 0;
+  rpm_start = myEnc.read();
   ms = millis();
-  while(ms<(ms+50)) {
-//    ms = millis();
+  ms_end = ms+50;
+  while(ms<ms_end) {
+    rpm_counter = myEnc.read();
+    ms = millis();
+    
+    /*Serial.print("rpmcounter: ");
+    Serial.println(rpm_counter);
+    Serial.print("ms: ");
     Serial.println(ms);
-    rpm = myEnc.read();
+    */
   }
-  rpm = myEnc.read() * (360*1000*60)/(4.4*48*50);
+  rpm = (rpm_counter-rpm_start) * (1000*60)/(4.4*48*50);
   Serial.print("rpm: ");
   Serial.println(rpm);
 
