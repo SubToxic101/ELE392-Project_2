@@ -33,8 +33,8 @@ void loop() {
   
 
   pos = myEnc.read() * (360)/(4.4*48);
-  Serial.print("degrees: ");
-  Serial.println(pos);
+  //Serial.print("degrees: ");
+  //Serial.println(pos);
 
   rpm = 0;
   rpm_start = myEnc.read();
@@ -51,18 +51,21 @@ void loop() {
     */
   }
   rpm = (rpm_counter-rpm_start) * (1000*60)/(4.4*48*50);
-  Serial.print("rpm: ");
-  Serial.println(rpm);
-
-  rpm = 0;
-  ms = 0;
+  //Serial.print("rpm: ");
+  //Serial.println(rpm);
   
   if (pos < 720) {
-    analogWrite(dirPin, 50);
+    analogWrite(dirPin, 255);
   }
   else {
     analogWrite(dirPin, 0);
   }
+
+  Serial.print(rpm);
+  Serial.print(",");
+  Serial.println(millis());
+  
+  
   
 
   /*
