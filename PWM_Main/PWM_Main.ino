@@ -26,6 +26,7 @@ float x_k1 = 0.0;
 float x_k2 = 0.0;
 float pwm = 0.0;
 float pwm_out = 0.0;
+int testset = 0.0;
 
 
 
@@ -47,9 +48,14 @@ void loop() {
   Imax = 2;
   Dmax = 2;
   set_rpm = 60;
-  set_pos = -1200;
+  //set_pos = 0;
   Ts = 0.05;
 
+  if (Serial.available() > 0) {
+    testset = Serial.parseInt();
+    Serial.println(testset);
+    set_pos = testset;
+  }
 
   //RPM + position calculation section
   rpm = 0;
