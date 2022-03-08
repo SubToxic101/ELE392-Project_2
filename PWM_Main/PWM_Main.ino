@@ -14,9 +14,13 @@ int ms = 0;
 int ms_end = 0;
 float Kp = 0.0;
 float Ki = 0.0;
+float Kd = 0.0;
+float Imax = 0.0;
+float Dmax = 0.0;
 float Ts = 0.0;
 float y_k = 0.0;
 float y_k1 = 0.0;
+float y_k2 = 0.0;
 float x_k = 0.0;
 float x_k1 = 0.0;
 float x_k2 = 0.0;
@@ -37,8 +41,11 @@ void setup() {
 void loop() {
 
   //Constants
-  Kp = 4.65;
-  Ki = 105;
+  Kp = 0.2362;
+  Ki = .01;
+  Kd = 0.4157;
+  Imax = 2;
+  Dmax = 2;
   set_rpm = 60;
   set_pos = 180;
   Ts = 0.05;
@@ -68,9 +75,13 @@ void loop() {
   //pwm = (int)(Kp * x_k - Kp * x_k1 + Ki * Ts * x_k1 + y_k1);
   
   //position control pwm code
-  pwm = (int)(208*x_k - 52.77*x_k1 - 3.004*x_k2 + 0.3004*y_k1);
+  //pwm = (int)(208*x_k - 52.77*x_k1 - 3.004*x_k2 + 0.3004*y_k1);
+
+  pwm  = (int)( (2*Imax*Dmax - Ts*(Ki*Dmax+Kd*Imax))*y_k1  -  (Ts*Ts*Ki*Kd+Imax*Dmax)*y_k2  +  ((Kp+Kd)*(Imax*Dmax))*x_k  -  (2*Imax*Dmax*(Kp+Kd)-Ts*(Imax*Dmax+Kd*Imax+Ki*Kd*Dmax+Ki*Imax*Dmax))*x_k1  +  ((Kp+Kd)*Imax*Dmax-Ts*(Imax*Dmax+Kd*Imax+Ki*Kd*Dmax+Ki*Imax*Dmax+Ts*Ts*Ki*Kd*(Imax + 1)))*x_k2  );
+ 
   x_k2 = x_k1;
-  x_k1 = x_k;  
+  x_k1 = x_k; 
+  y_k2 = y_k1; 
   y_k1 = y_k;
 
   //determine direction of pwm to set dirFlag
