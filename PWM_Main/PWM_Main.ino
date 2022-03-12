@@ -25,7 +25,12 @@ float x_k = 0.0;
 float x_k1 = 0.0;
 float x_k2 = 0.0;
 float pwm = 0.0;
+float pwm1 = 0.0;
+int pwm_count = 0;
 float pwm_out = 0.0;
+float fix_error = 0.0;
+float fix_error1 = 0.0;
+int fix_error_count = 0;
 int testset = 0.0;
 
 
@@ -76,6 +81,7 @@ void loop() {
 
   //position setpoint
   x_k = set_pos - pos;
+  fix_error = set_pos - pos;
 
   //rpm control pwm code
   //pwm = (int)(Kp * x_k - Kp * x_k1 + Ki * Ts * x_k1 + y_k1);
@@ -114,17 +120,49 @@ void loop() {
   if (pwm > 255) {
     pwm_out = 255;
   }
-  else if (pwm < 0) {
+  else if (pwm < 30) {
     pwm_out = 0;
   }
   else {
     pwm_out = pwm;
   }
-
+  
   
   Serial.print("pwm: ");
   Serial.println(pwm);
   analogWrite(dirPin, pwm_out);
+
+  /*
+  if (pwm == 0) {}
+  else if (pwm1 == pwm) {
+    pwm_count++;
+  }
+  pwm1 = pwm;
+
+  if (pwm_count > 5) {
+     analogWrite(dirPin, 60);
+     pwm_count = 0;
+  }
+  */
+  
+  if (abs(fix_error) > 3) {
+    if (fix_error1 == fix_error) {
+      fix_error_count++;
+    }
+  }
+  fix_error1 = fix_error;
+
+  if (fix_error_count > 3) {
+     if (abs(fix_error) > 40) {
+        analogWrite(dirPin, 100);
+     }
+     else{
+     analogWrite(dirPin, 50);
+     }
+     fix_error_count = 0;
+  }
+  
+  
   //Serial.print(rpm);
   Serial.print(pos);
   Serial.print(",");
