@@ -8,6 +8,7 @@ float rpm = 0.0;
 float pos = 0.0;
 float rpm_counter = 0.0;
 float rpm_start = 0.0;
+<<<<<<< HEAD
 float set_rpm = 0.0;
 float set_pos = 0.0;
 int ms = 0;
@@ -34,10 +35,14 @@ int fix_error_count = 0;
 int testset = 0.0;
 
 
+=======
+int ms = 0;
+int ms_end = 0;
+>>>>>>> parent of feaa4d5 (3/1 Changes)
 
 Encoder myEnc(inputPin1, inputPin2);
 
-int dirFlag = 1;
+int dirFlag = 0;
 void setup() {
   pinMode(pwmPin1, OUTPUT);
   pinMode(pwmPin2, OUTPUT);
@@ -46,6 +51,7 @@ void setup() {
 
 void loop() {
 
+<<<<<<< HEAD
   //Constants
   Kp = 0.2362;
   Ki = .02983;
@@ -63,14 +69,22 @@ void loop() {
   }
 
   //RPM + position calculation section
+=======
+  
+
+  pos = myEnc.read() * (360)/(4.4*48);
+  //Serial.print("degrees: ");
+  //Serial.println(pos);
+
+>>>>>>> parent of feaa4d5 (3/1 Changes)
   rpm = 0;
   rpm_start = myEnc.read();
   ms = millis();
-  ms_end = ms + 50;
-  while (ms < ms_end) {
-    //Serial.println("while called");
+  ms_end = ms+50;
+  while(ms<ms_end) {
     rpm_counter = myEnc.read();
     ms = millis();
+<<<<<<< HEAD
   }
   rpm = (rpm_counter - rpm_start) * (1000 * 60) / (4.4 * 48 * 50);
   pos = myEnc.read() * (360)/(4.4*48);
@@ -142,6 +156,39 @@ void loop() {
   if (pwm_count > 5) {
      analogWrite(dirPin, 60);
      pwm_count = 0;
+=======
+    
+    /*Serial.print("rpmcounter: ");
+    Serial.println(rpm_counter);
+    Serial.print("ms: ");
+    Serial.println(ms);
+    */
+  }
+  rpm = (rpm_counter-rpm_start) * (1000*60)/(4.4*48*50);
+  //Serial.print("rpm: ");
+  //Serial.println(rpm);
+  
+  if (pos < 720) {
+    analogWrite(dirPin, 255);
+  }
+  else {
+    analogWrite(dirPin, 0);
+  }
+
+  Serial.print(rpm);
+  Serial.print(",");
+  Serial.println(millis());
+  
+  
+  
+
+  /*
+  if (dirFlag == 0) {
+    dirFlag = 1;
+  }
+  else if (dirFlag == 1) {
+    dirFlag = 0;
+>>>>>>> parent of feaa4d5 (3/1 Changes)
   }
   */
   
