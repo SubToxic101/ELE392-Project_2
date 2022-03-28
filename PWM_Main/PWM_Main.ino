@@ -46,16 +46,16 @@ void setup() {
 
 void loop() {
 
-  //Constants
+  //Assorted Constants
   Kp = 0.2362;
   Ki = .02983;
   Kd = 0.4157;
   Imax = 2;
   Dmax = 2;
   set_rpm = 60;
-  //set_pos = 0;
   Ts = 0.05;
 
+  //Real-Time input handling
   if (Serial.available() > 0) {
     testset = Serial.parseInt();
     Serial.println(testset);
@@ -78,19 +78,16 @@ void loop() {
   //PID control equation section
   //rpm setpoint
   //x_k = set_rpm - rpm;
-
   //position setpoint
   x_k = set_pos - pos;
+  //Error-fixer input
   fix_error = set_pos - pos;
 
-  //rpm control pwm code
+  //rpm control pwm equation
   //pwm = (int)(Kp * x_k - Kp * x_k1 + Ki * Ts * x_k1 + y_k1);
   
-  //position control pwm code
+  //position control pwm equation
   pwm = (int)(0.652*x_k - 1.188*x_k1 + 0.5478*x_k2 + 1.762*y_k1 - 0.7668*y_k2);
-
- // pwm  = (int)((2*Imax*Dmax - Ts*(Ki*Dmax+Kd*Imax))*y_k1  -  (Ts*Ts*Ki*Kd+Imax*Dmax)*y_k2  +  ((Kp+Kd)*(Imax*Dmax))*x_k  -  (2*Imax*Dmax*(Kp+Kd)-Ts*(Imax*Dmax+Kd*Imax+Ki*Kd*Dmax+Ki*Imax*Dmax))*x_k1  +  ((Kp+Kd)*Imax*Dmax-Ts*(Imax*Dmax+Kd*Imax+Ki*Kd*Dmax+Ki*Imax*Dmax+Ts*Ts*Ki*Kd*(Imax + 1)))*x_k2);
- 
   x_k2 = x_k1;
   x_k1 = x_k; 
   y_k2 = y_k1; 
@@ -127,24 +124,11 @@ void loop() {
     pwm_out = pwm;
   }
   
-  
   Serial.print("pwm: ");
   Serial.println(pwm);
   analogWrite(dirPin, pwm_out);
 
-  /*
-  if (pwm == 0) {}
-  else if (pwm1 == pwm) {
-    pwm_count++;
-  }
-  pwm1 = pwm;
-
-  if (pwm_count > 5) {
-     analogWrite(dirPin, 60);
-     pwm_count = 0;
-  }
-  */
-  
+  //Error-Fixer section
   if (abs(fix_error) > 3) {
     if (fix_error1 == fix_error) {
       fix_error_count++;
@@ -162,8 +146,6 @@ void loop() {
      fix_error_count = 0;
   }
   
-  
-  //Serial.print(rpm);
   Serial.print(pos);
   Serial.print(",");
   Serial.println(millis());
